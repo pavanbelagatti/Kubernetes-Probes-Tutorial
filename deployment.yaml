@@ -3,23 +3,34 @@ kind: Deployment
 metadata:
   name: notes-app-deployment
   labels:
-    app: notes-app
+    app: note-sample-app
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: notes-app
+      app: note-sample-app
   template:
     metadata:
       labels:
-        app: notes-app
+        app: note-sample-app
     spec:
       containers:
-      - name: notes-app-deployment
-        image: pavansa/notes-app
+      - name: note-sample-app-container
+        image: pavansa/note-sample-app
         resources:
           requests:
             cpu: "100m"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
